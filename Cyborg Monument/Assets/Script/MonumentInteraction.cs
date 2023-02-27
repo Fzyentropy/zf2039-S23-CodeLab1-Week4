@@ -14,10 +14,14 @@ public class MonumentInteraction : MonoBehaviour
     private GameObject textBox;
     [SerializeField]
     private AudioSource SFX;
+    [SerializeField]
+    private TMP_Text Mark;
 
     private bool isPrinting = false;
     private bool Clickable = false;
     private bool isClicking = false;
+
+    private bool isFading = false;
 
     void Start()
     {
@@ -63,21 +67,23 @@ public class MonumentInteraction : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
+        // isFading = false;
         if (col.CompareTag("Player"))
         {
             allowEInput = true;
             Debug.Log("enable E");
-            // TODO pop up ? or E
+            if(!isFading) {StartCoroutine(MarkAppear());}
         }
     }
 
     private void OnTriggerExit2D(Collider2D col)
     {
+        // isFading = false;
         if (col.CompareTag("Player"))
         {
             allowEInput = false;
             Debug.Log("disable E");
-            // TODO ? or E disappear
+            if(!isFading) {StartCoroutine(MarkDisappear());}
         }
     }
 
@@ -92,7 +98,7 @@ public class MonumentInteraction : MonoBehaviour
         
         yield return new WaitForSeconds(.1f);
         
-        // TODO ? or E disappear
+        StartCoroutine(MarkDisappear());
         
         StartCoroutine(PrintDialogue(splitText, 0));
         
@@ -160,7 +166,42 @@ public class MonumentInteraction : MonoBehaviour
             yield break; 
         }
     }
-    
-    
+
+
+
+    IEnumerator MarkAppear()
+    {
+        float fadeScale = .5f;
+        float fadeSpeed = .5f;
+        
+        while (true)
+        {
+            if (Mark.color.a >= 1) {break;}
+            if (isFading) {break;}
+
+            Mark.color = new Color(Mark.color.r, Mark.color.g, Mark.color.b, Mark.color.a + fadeScale);
+            yield return new WaitForSeconds(fadeSpeed);
+        }
+        
+        // Mark.color = new Color(Mark.color.r, Mark.color.g, Mark.color.b, 1);
+        // isFading = false;
+    }
+
+    IEnumerator MarkDisappear()
+    {
+        isFading = true;
+        float fadeScale = .4f;
+        float fadeSpeed = .15f;
+        
+        while (true)
+        {
+            if (Mark.color.a <= 0) {break;}
+
+            Mark.color = new Color(Mark.color.r, Mark.color.g, Mark.color.b, Mark.color.a - fadeScale);
+            yield return new WaitForSeconds(fadeSpeed);
+        }
+        // Mark.color = new Color(Mark.color.r, Mark.color.g, Mark.color.b, 0);
+        isFading = false;
+    }
     
 }
