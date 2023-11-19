@@ -93,8 +93,8 @@ public class MonumentInteraction : MonoBehaviour
     {
 
         GameManager.isReading = true;
-        string txtText = File.ReadAllText(GameManager.currentDir + "/" + GameManager.GetCurrentTxtName() + ".txt");
-        string[] splitText = txtText.Split("\n");
+        // string txtText = File.ReadAllText(GameManager.currentDir + "/" + GameManager.GetCurrentTxtName() + ".txt");
+        string[] splitText = GameManager.currentText.Split("\n");
         
         yield return new WaitForSeconds(.1f);
         
